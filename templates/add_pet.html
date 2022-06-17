@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %} Homepage {% endblock %}
+{% block title %} Add a Pet Form {% endblock %}
 
 {% block content %}
 
@@ -10,9 +10,9 @@
 <form id="add-pet-form" method="POST">
     {{ form.hidden_tag() }}
 
-    {% for field in form 
+    {% for field in form
         if field.widget.input_type != 'hidden' %}
-    
+
         <p>
             {{ field.label }}
             {{ field }}
@@ -24,6 +24,6 @@
     {% endfor %}
 
     <button type="submit">Save</button>
-</form>        
+</form>
 
 {% endblock %}

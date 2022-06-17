@@ -3,7 +3,7 @@
 from flask import Flask, render_template, redirect, flash
 from flask_debugtoolbar import DebugToolbarExtension
 from models import db, connect_db, Pet
-from forms import AddPetForm
+from forms import AddPetForm, EditPetForm
 
 app = Flask(__name__)
 
@@ -23,14 +23,19 @@ db.create_all()
 
 toolbar = DebugToolbarExtension(app)
 
+
 @app.get("/")
 def display_home():
     """Display homepage with pets"""
+
     pets = Pet.query.all()
     return render_template("home.html", pets=pets)
 
+
 @app.route("/add", methods=["GET", "POST"])
 def display_add_pet_form():
+    """Display add pet form and add pet upon submittal of valid data"""
+
     form = AddPetForm()
 
     if form.validate_on_submit():
@@ -42,13 +47,13 @@ def display_add_pet_form():
         available = form.available.data
 
         pet = Pet(
-                  name=name,
-                  species=species,
-                  photo_url=photo_url,
-                  age=age,
-                  notes=notes,
-                  available=available,
-                  )
+            name=name,
+            species=species,
+            photo_url=photo_url,
+            age=age,
+            notes=notes,
+            available=available,
+        )
 
         db.session.add(pet)
         db.session.commit()
@@ -59,3 +64,23 @@ def display_add_pet_form():
         return render_template("add_pet.html", form=form)
 
 
+@app.route("/<int:pet_id>", methods=["GET", "POST"])
+def display_or_edit_pet(pet_id):
+    """Display pet info and edit pet form
+    and update pet info upon submittal of valid data
+    The edit pet form only allows edit of photo_url, notes, and available"""
+
+    pet = Pet.query.get_or_404(pet_id)
+    form = EditPetForm(obj=pet)
+
+    if form.validate_on_submit():
+        pet.photo_url = form.photo_url.data
+        pet.notes = form.notes.data
+        pet.available = form.available.data
+
+        db.session.commit()
+
+        flash(f"Updated {pet.name}!")
+        return redirect(f"/{pet_id}")
+    else:
+        return render_template("pet_info.html", form=form, pet=pet)
