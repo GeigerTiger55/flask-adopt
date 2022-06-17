@@ -8,17 +8,23 @@
 
 
 {% for pet in pets %}
-  <div>
-    <a href="/{{ pet.id }}">{{ pet.name }}</a>
+  <div class="container">
+    <div class="row">
+      <a href="/{{ pet.id }}">{{ pet.name }}</a>
+    </div>
     {% if pet.photo_url %}
-      <img src="{{ pet.photo_url }}" alt="" width="150px" height="150px">
+    <div class="row">
+      <img src="{{ pet.photo_url }}" alt="" width="150" height="150">
+    </div>
     {% endif %}
     {% if pet.available %}
+    <div class="row">
       <p><b>Available</b></p>
+    </div>
     {% endif %}
   </div>
 {% endfor %}
 
-<a href="/add">Add Pet</a>
+<a class="btn btn-primary" href="/add">Add Pet</a>
 
 {% endblock %}

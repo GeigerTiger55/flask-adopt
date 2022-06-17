@@ -73,6 +73,8 @@ def display_or_edit_pet(pet_id):
     pet = Pet.query.get_or_404(pet_id)
     form = EditPetForm(obj=pet)
 
+    breakpoint()
+
     if form.validate_on_submit():
         pet.photo_url = form.photo_url.data
         pet.notes = form.notes.data

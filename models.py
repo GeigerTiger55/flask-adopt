@@ -21,11 +21,13 @@ class Pet(db.Model):
 
     __tablename__ = "pets"
 
-    id = db.Column(db.Integer,
-                   primary_key=True,
-                   autoincrement=True)
-    name = db.Column(db.String(50),
-                     nullable=False)
+    id = db.Column(
+        db.Integer,
+        primary_key=True,
+        autoincrement=True)
+    name = db.Column(
+        db.String(50),
+        nullable=False)
     species = db.Column(db.String(50),
                         nullable=False)
     photo_url = db.Column(db.Text,
@@ -36,6 +38,6 @@ class Pet(db.Model):
     notes = db.Column(db.Text,
                       nullable=False,
                       default='')
-    available = db.Column(db.Boolean,
+    available = db.Column(db.String(10),
                           nullable=False,
                           default=True)

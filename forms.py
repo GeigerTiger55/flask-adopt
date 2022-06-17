@@ -22,8 +22,7 @@ class AddPetForm(FlaskForm):
                       validators=[InputRequired()])
     notes = StringField("Notes")
     available = RadioField("Available",
-                           choices=[("true", "True"), ("false", "False")],
-                           coerce=bool,
+                           choices=[("True", "Yes"), ("False", "No")],
                            validators=[InputRequired()])
 
 
@@ -34,6 +33,5 @@ class EditPetForm(FlaskForm):
                             validators=[Optional(), URL()])
     notes = StringField("Notes")
     available = RadioField("Available",
-                           choices=[("true", "True"), ("false", "False")],
-                           coerce=bool,
+                           choices=[("True", "Yes"), ("False", "No")],
                            validators=[InputRequired()])
