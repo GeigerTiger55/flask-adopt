@@ -8,13 +8,15 @@
 
 
 {% for pet in pets %}
-<div>
-  <a href="/{{ pet.id }}">{{ pet.name }}</a>
-  <img src="{{ pet.photo_url }}" alt="" width="150px" height="150px">
-  {% if {{ pet.available }} %}
-    <p><b>Available</b></p>
-  {% endif %}
-</div>
+  <div>
+    <a href="/{{ pet.id }}">{{ pet.name }}</a>
+    {% if pet.photo_url %}
+      <img src="{{ pet.photo_url }}" alt="" width="150px" height="150px">
+    {% endif %}
+    {% if pet.available %}
+      <p><b>Available</b></p>
+    {% endif %}
+  </div>
 {% endfor %}
 
 <a href="/add">Add Pet</a>

@@ -55,5 +55,7 @@ def display_add_pet_form():
 
         flash(f"Added {name}!")
         return redirect("/")
+    else:
+        return render_template("add_pet.html", form=form)
 
 
