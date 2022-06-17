@@ -28,16 +28,21 @@ class Pet(db.Model):
     name = db.Column(
         db.String(50),
         nullable=False)
-    species = db.Column(db.String(50),
-                        nullable=False)
-    photo_url = db.Column(db.Text,
-                          nullable=False,
-                          default=DEFAULT_IMAGE)
-    age = db.Column(db.String(10),
-                    nullable=False)
-    notes = db.Column(db.Text,
-                      nullable=False,
-                      default='')
-    available = db.Column(db.String(10),
-                          nullable=False,
-                          default=True)
+    species = db.Column(
+        db.String(50),
+        nullable=False)
+    photo_url = db.Column(
+        db.Text,
+        nullable=False,
+        default=DEFAULT_IMAGE)
+    age = db.Column(
+        db.String(10),
+        nullable=False)
+    notes = db.Column(
+        db.Text,
+        nullable=False,
+        default='')
+    available = db.Column(
+        db.Boolean,
+        nullable=False,
+        default=True)
