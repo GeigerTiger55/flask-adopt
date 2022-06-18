@@ -40,19 +40,24 @@ def refresh_credentials():
 """Need to verify/check. Currently getting "Access token invalid or expired"""
 def update_auth_token_string():
     """Update auth_token"""
-    resp = requests.get(
+    
+
+    resp = requests.post(
         "https://api.petfinder.com/v2/oauth2/token",
-        params={
+        data={
             "grant_type": "client_credentials",
             "client_id": PETFINDER_API_KEY,
             "client_secret": SECRET_KEY,
         })
 
-    breakpoint()
+    
 
-    return resp.data.access_token
+    response = resp.json()    
 
-# TODO: continue writing
+    return response['access_token']
+
+# TODO: this function should be the one that returns a single pet, currently
+# functionality is in display_home()
 # def display_list_pets():
 
 #     resp = requests.get(
@@ -71,6 +76,7 @@ def update_auth_token_string():
 def display_home():
     """Display homepage with pets"""
 
+    #TODO: move this into it's own function - separation of concerns
     resp = requests.get(
         "https://api.petfinder.com/v2/animals",
         headers={"Authorization": f"Bearer {auth_token}"},
@@ -80,8 +86,17 @@ def display_home():
     animal_data = resp.json()
 
     pet_index = random.randrange(0,99)
-    animal = animal_data.animals[pet_index]
-    print(animal)
+    animal = animal_data['animals'][pet_index]
+    
+    new_pet = Pet(
+            name=animal['name'],
+            species=animal['species'],
+            photo_url= animal['primary_photo_cropped']['medium'] if animal['primary_photo_cropped'] else '',
+            age=animal['age'],
+        )
+
+    db.session.add(new_pet)
+    db.session.commit()
 
     pets = Pet.query.all()
     return render_template("home.html", pets=pets)
