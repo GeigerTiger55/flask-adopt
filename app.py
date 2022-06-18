@@ -4,13 +4,16 @@ from flask import Flask, render_template, redirect, flash
 from flask_debugtoolbar import DebugToolbarExtension
 from models import db, connect_db, Pet
 from forms import AddPetForm, EditPetForm
+import random
+import requests
 import os
 
 app = Flask(__name__)
 
 SECRET_KEY = os.environ['PETFINDER_SECRET_KEY']
 PETFINDER_API_KEY = os.environ['PETFINDER_API_KEY']
-ACCESS_TOKEN = os.environ['PETFINDER_ACCESS_TOKEN']
+# auth_token = os.environ['PET_FINDER_ACCESS_TOKEN']
+app.config['SECRET_KEY'] = "SECRET!"
 
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql:///adopt"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -25,6 +28,7 @@ db.create_all()
 # app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
 toolbar = DebugToolbarExtension(app)
+auth_token = None
 
 @app.before_first_request
 def refresh_credentials():
@@ -33,10 +37,51 @@ def refresh_credentials():
     global auth_token
     auth_token = update_auth_token_string()
 
+"""Need to verify/check. Currently getting "Access token invalid or expired"""
+def update_auth_token_string():
+    """Update auth_token"""
+    resp = requests.get(
+        "https://api.petfinder.com/v2/oauth2/token",
+        params={
+            "grant_type": "client_credentials",
+            "client_id": PETFINDER_API_KEY,
+            "client_secret": SECRET_KEY,
+        })
+
+    breakpoint()
+
+    return resp.data.access_token
+
+# TODO: continue writing
+# def display_list_pets():
+
+#     resp = requests.get(
+#         "https://api.petfinder.com/v2/animals",
+#         headers={"Authorization": f"Bearer {auth_token}"},
+#         params={"limit": 100},
+#     )
+
+#     pet_index = random.randrange(0,99)
+#     animal = resp.data.animals[pet_index]
+#     print(animal)
+
+
 
 @app.get("/")
 def display_home():
     """Display homepage with pets"""
+
+    resp = requests.get(
+        "https://api.petfinder.com/v2/animals",
+        headers={"Authorization": f"Bearer {auth_token}"},
+        params={"limit": 100},
+    )
+
+    animal_data = resp.json()
+
+    pet_index = random.randrange(0,99)
+    animal = animal_data.animals[pet_index]
+    print(animal)
 
     pets = Pet.query.all()
     return render_template("home.html", pets=pets)
@@ -82,7 +127,7 @@ def display_or_edit_pet(pet_id):
     """Display pet info and edit pet form
     and update pet info upon submittal of valid data
     The edit pet form only allows edit of photo_url, notes, and available
-    
+
     If valid fields, redirects back to pet info page and confirms update
     If invalid fields, reloads pet info template"""
 
